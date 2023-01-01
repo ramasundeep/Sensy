@@ -1,0 +1,25 @@
+import requests
+import boto3
+
+# Set the URL for the web app's API endpoint
+api_url = "https://earth" // Google Earth api
+
+# Set the name of the AWS S3 bucket where you want to save the images
+bucket_name = "my-satellite-imagery"
+
+# Use the AWS SDK for Python (Boto3) to connect to S3
+s3 = boto3.client("s3")
+
+# Make a request to the API to get a list of all available satellite imagery
+response = requests.get(api_url)
+imagery_list = response.json()
+
+# Iterate through the list of satellite imagery
+for imagery in imagery_list:
+  # Download the image from the URL provided in the API response
+  image_data = requests.get(imagery["url"]).content
+
+  # Save the image to S3
+  s3.put_object(Bucket=bucket_name, Key=imagery["id"], Body=image_data)
+
+print("All satellite imagery has been saved to S3!")
